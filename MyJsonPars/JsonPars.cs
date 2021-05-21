@@ -11,9 +11,10 @@ namespace MyJsonPars
     public class JsonPars
     {
         private static Dictionary<string, string> dictionaryJson = new Dictionary<string, string>();
-        public static Dictionary<string, string> getJsonValid(JToken token)
+        public static Dictionary<string, string> getJsonValid(JToken token, out string Error)
         {
             dictionaryJson.Clear();
+            Validate(token, out Error);
             return recursivJson(token);
         }
         private static Dictionary<string, string> recursivJson(JToken jToken)
@@ -37,14 +38,11 @@ namespace MyJsonPars
             return dictionaryJson;
         }
 
-        public static bool Validate(string fileName, out string Error)
+        private static bool Validate(JToken jsonString, out string Error)
         {
-            StreamReader streamReader = new StreamReader(fileName);
-
-            string json = streamReader.ReadToEnd();
             try
             {
-                JObject.Parse(json);
+                JObject.Parse(jsonString.Parent.ToString());
                 Error = null;
                 return true;
             }
@@ -56,3 +54,4 @@ namespace MyJsonPars
         }
     }
 }
+
