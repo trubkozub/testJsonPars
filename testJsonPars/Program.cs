@@ -35,17 +35,19 @@ namespace testJsonPars
         static void printJson(string fileName)
         {
             StreamReader streamReader = new StreamReader(fileName);
-
+            string Error;
             string json = streamReader.ReadToEnd();
             dynamic parsedObj = JsonConvert.DeserializeObject(json);
-            var jObj = (JObject)parsedObj;
 
-            foreach (JToken token in jObj.Children())
+            foreach (var item in parsedObj)
             {
-                foreach (KeyValuePair<string, string> keyValue in MyJsonPars.JsonPars.getJsonValid(token))
-                    Console.WriteLine(keyValue.Key + " = " + keyValue.Value);
+                foreach (JToken token in item.Children())
+                {
+                    foreach (KeyValuePair<string, string> keyValue in MyJsonPars.JsonPars.getJsonValid(token, out Error))
+                        Console.WriteLine(keyValue.Key + " = " + keyValue.Value);
 
-                Console.WriteLine("");
+                    Console.WriteLine(Error);
+                }
             }
         }
 
@@ -62,10 +64,7 @@ namespace testJsonPars
             {
                 if (isValidFile(pathFile))
                 {
-                    if (MyJsonPars.JsonPars.Validate(pathFile, out errorJson))
-                        return pathFile;
-                    else
-                        Console.Write(errorFile + errorJson);
+                    return pathFile;
                 }
                 else
                     Console.Write(errorFile + errorJson);
@@ -89,3 +88,4 @@ namespace testJsonPars
         }
     }
 }
+
